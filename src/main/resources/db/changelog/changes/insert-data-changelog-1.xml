@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+  <changeSet id="20210108-03-insert-data" author="ADMIN">
+    <preConditions onFail="MARK_RAN" onError="CONTINUE" onSqlOutput="TEST">
+    </preConditions>
+    <comment>Insert data</comment>
+    <insert tableName="role">
+      <column name="role_name" value="ADMIN"/>
+    </insert>
+    <insert tableName="role">
+      <column name="role_name" value="SUPPLIER"/>
+    </insert>
+    <insert tableName="role">
+      <column name="role_name" value="BUYER"/>
+    </insert>
+
+    <insert tableName="account">
+      <column name="username" value="admin"/>
+      <column name="full_name" value="super admin"/>
+      <column name="email" value="admin@gmail.com"/>
+      <column name="phone" value="0372612247"/>
+      <column name="age" value="30"/>
+      <column name="password" value="$2a$12$nW3kBIP6qKyThFr6SWsDc.ME2vc3yxwMNykHwA4Ylcs125D5e43gq"/>
+      <column name="create_at" valueDate="2022-09-09"/>
+      <column name="updated_at" valueDate="2022-09-09"/>
+      <column name="is_deleted" valueBoolean="false"/>
+    </insert>
+
+    <insert tableName="account">
+      <column name="username" value="supplier"/>
+      <column name="full_name" value="John Doe"/>
+      <column name="email" value="sup@gmail.com"/>
+      <column name="phone" value="0372612248"/>
+      <column name="age" value="30"/>
+      <column name="password" value="$2a$12$nW3kBIP6qKyThFr6SWsDc.ME2vc3yxwMNykHwA4Ylcs125D5e43gq"/>
+      <column name="create_at" valueDate="2022-09-09"/>
+      <column name="updated_at" valueDate="2022-09-09"/>
+      <column name="is_deleted" valueBoolean="false"/>
+    </insert>
+
+    <insert tableName="account">
+      <column name="username" value="buyer"/>
+      <column name="full_name" value="Adam"/>
+      <column name="email" value="nguyenlinh3836@gmail.com"/>
+      <column name="phone" value="0372612248"/>
+      <column name="age" value="30"/>
+      <column name="password" value="$2a$12$nW3kBIP6qKyThFr6SWsDc.ME2vc3yxwMNykHwA4Ylcs125D5e43gq"/>
+      <column name="create_at" valueDate="2022-09-09"/>
+      <column name="updated_at" valueDate="2022-09-09"/>
+      <column name="is_deleted" valueBoolean="false"/>
+    </insert>
+
+    <insert tableName="users_roles">
+      <column name="user_id">1</column>
+      <column name="role_id">1</column>
+    </insert>
+
+    <insert tableName="users_roles">
+      <column name="user_id">2</column>
+      <column name="role_id">2</column>
+    </insert>
+
+    <insert tableName="users_roles">
+      <column name="user_id">3</column>
+      <column name="role_id">3</column>
+    </insert>
+
+  </changeSet>
+</databaseChangeLog>
