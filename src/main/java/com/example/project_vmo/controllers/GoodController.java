@@ -1,10 +1,12 @@
 package com.example.project_vmo.controllers;
 
+import com.example.project_vmo.commons.filters.ValidImage;
 import com.example.project_vmo.models.request.GoodDto;
 import com.example.project_vmo.models.response.GoodResponse;
 import com.example.project_vmo.services.GoodService;
 import com.example.project_vmo.services.ImageService;
 import java.io.IOException;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +41,7 @@ public class GoodController {
 
   @PostMapping()
   public ResponseEntity<?> createGood(@RequestPart(value = "good") @Validated GoodDto goodDto,
-      @RequestPart(value = "files", required = false) @Validated MultipartFile[] files)
+      @RequestPart(value = "files", required = false) @Valid  MultipartFile[]  files)
       throws IOException {
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(goodService.createGood(goodDto, files));
   }

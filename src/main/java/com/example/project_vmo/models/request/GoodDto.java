@@ -1,9 +1,11 @@
 package com.example.project_vmo.models.request;
 
+import com.example.project_vmo.commons.filters.ValidImage;
 import com.sun.istack.NotNull;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Id;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -22,7 +24,8 @@ public class GoodDto {
   private String goodsName;
   @NotNull
   private int quantity;
-  private List<ImageDto> images;
+  @ValidImage
+  private List< ImageDto> images;
   private int supplierId;
   private Date create_at;
 //  private Date updated_at;

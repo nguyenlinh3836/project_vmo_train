@@ -1,12 +1,12 @@
 package com.example.project_vmo.models.response;
 
-import com.example.project_vmo.models.request.UserStaticDto;
+import com.example.project_vmo.models.request.UserStatistDto;
 import java.util.List;
 import lombok.ToString;
 
 public class ListUserStatist {
   @ToString.Exclude
-  private List<UserStaticDto> content;
+  private List<UserStatistDto> content;
   private int pageNo;
   private int pageSize;
   private long totalElements;

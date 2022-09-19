@@ -31,7 +31,7 @@ public class BuyerController {
         .body(accountService.updateAccount(accountDto, user ));
   }
 
-  @PutMapping("/updatePassword/{id}")
+  @PutMapping("/changePassword/{id}")
   public ResponseEntity<?> updatePassword(@PathVariable("id") int id,@RequestBody
       UpdatePasswordRequest updatePasswordRequest){
     accountService.updatePassword(updatePasswordRequest,id);
