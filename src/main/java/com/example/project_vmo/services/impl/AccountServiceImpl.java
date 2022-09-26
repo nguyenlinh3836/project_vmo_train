@@ -2,6 +2,7 @@ package com.example.project_vmo.services.impl;
 
 import com.example.project_vmo.commons.config.MapperUtil;
 import com.example.project_vmo.commons.exception.ResourceAlreadyExistsException;
+import com.example.project_vmo.commons.exception.ResourceNotFoundException;
 import com.example.project_vmo.commons.filters.PhoneValidator;
 import com.example.project_vmo.models.entities.Account;
 import com.example.project_vmo.models.entities.Role;
@@ -105,6 +106,9 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public UpdateAccountRequest updateAccount(UpdateAccountRequest accountDto, User user) {
     Account account = accountRepo.findByUsername(user.getUsername());
+    if (account == null){
+      throw new ResourceNotFoundException("Not found" + user.getUsername());
+    }
     account.setFullName(accountDto.getFullName());
     account.setAddress(accountDto.getAddress());
     account.setAge(accountDto.getAge());

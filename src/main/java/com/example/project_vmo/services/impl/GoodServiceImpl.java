@@ -1,4 +1,6 @@
 package com.example.project_vmo.services.impl;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.project_vmo.commons.config.MapperUtil;
 import com.example.project_vmo.models.entities.Account;
 import com.example.project_vmo.models.entities.Good;
@@ -10,10 +12,10 @@ import com.example.project_vmo.repositories.GoodRepo;
 import com.example.project_vmo.repositories.ImageRepo;
 import com.example.project_vmo.services.GoodService;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.Map;
+import java.util.Objects;
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import java.io.IOException;
@@ -39,6 +41,9 @@ public class GoodServiceImpl implements GoodService {
   @Autowired
   private AccountRepo accountRepo;
 
+  @Autowired
+  private Cloudinary cloudinary;
+
   public static String uploadDir =
       System.getProperty("user.dir") + "/src/main/resources/static/images";
 
@@ -55,7 +60,7 @@ public class GoodServiceImpl implements GoodService {
     response.setTotalElements(goods.getTotalElements());
     response.setTotalPages(goods.getTotalPages());
     response.setLast(goods.isLast());
-    response.setCode(200);
+    response.setCode(HttpStatus.ACCEPTED.value());
     return response;
   }
 
@@ -79,17 +84,13 @@ public class GoodServiceImpl implements GoodService {
     for (MultipartFile item : files) {
       try {
         {
-          String name = item.getOriginalFilename();
-          Image itemImage = new Image();
-          String randomID = UUID.randomUUID().toString();
-          assert name != null;
-          String filename1 = randomID.concat(name.substring(name.lastIndexOf(".")));
-          String filePath = uploadDir + File.separator + filename1;
-          File f = new File(uploadDir);
-          Files.copy(item.getInputStream(), Paths.get(filePath));
-          itemImage.setGoods(good);
-          itemImage.setName(name);
-          image.add(itemImage);
+          Map result = upload(item);
+          Image dbImage = new Image();
+          dbImage.setName((String)result.get("original_filename"));
+          dbImage.setFileType(item.getContentType());
+          dbImage.setImageUrl((String)result.get("url"));
+          dbImage.setGoods(good);
+          image.add(dbImage);
         }
       }catch (IOException e){
         e.printStackTrace();
@@ -122,5 +123,14 @@ public class GoodServiceImpl implements GoodService {
     Good good = goodRepo.findByGoodsId(id);
     good.setIs_deleted(true);
     goodRepo.save(good);
+  }
+
+  public Map upload(MultipartFile multipartFile) throws IOException {
+    File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+    FileOutputStream fo = new FileOutputStream(file);
+    fo.write(multipartFile.getBytes());
+    fo.close();
+    Map result = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+    return result;
   }
 }

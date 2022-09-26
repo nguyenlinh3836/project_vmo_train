@@ -47,8 +47,8 @@ public class GoodController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<?> updateGood(@RequestPart(value = "good") @Validated GoodDto goodDto, @PathVariable int id,
-      @RequestPart @Validated MultipartFile[] files)
+  public ResponseEntity<?> updateGood(@RequestPart(value = "good")  GoodDto goodDto, @PathVariable int id,
+      @RequestPart MultipartFile[] files)
       throws IOException {
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body(goodService.updateGood(goodDto, id, files));
@@ -64,6 +64,4 @@ public class GoodController {
   public ResponseEntity<?> getGoodById(@PathVariable("goodId") int goodId){
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(goodService.getGoodById(goodId));
   }
-
-
 }

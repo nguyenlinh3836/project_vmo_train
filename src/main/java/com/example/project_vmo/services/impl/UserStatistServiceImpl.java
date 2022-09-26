@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,18 +38,15 @@ public class UserStatistServiceImpl implements UserStatistService {
         userStatistNew.setAccount(account.get());
         userStatistNew.setCount(1);
         UserStatistResponse response = MapperUtil.map(userStaticRepo.save(userStatistNew), UserStatistResponse.class);
-        AccountResponse accountResponse = MapperUtil.map(accountRepo.findByUsername(userStatistNew.getAccount().getUsername()),
-            AccountResponse.class);
-        response.setAccountResponse(accountResponse);
+        response.setUsername(userStatistNew.getAccount().getUsername());
         return response;
       } else {
         UserStatist userStatistOld = userStaticRepo.findByAccount(account.get());
         userStatistOld.setCount(userStatist.getCount() + 1);
         userStatistOld.setAccount(account.get());
-        UserStatistResponse response = MapperUtil.map(userStaticRepo.save(userStatistOld), UserStatistResponse.class);
-        AccountResponse accountRes = MapperUtil.map(accountRepo.findByUsername(userStatistOld.getAccount().getUsername()),
-            AccountResponse.class);
-        response.setAccountResponse(accountRes);
+        userStaticRepo.save(userStatistOld);
+        UserStatistResponse response = MapperUtil.map(userStatistOld, UserStatistResponse.class);
+        response.setUsername(userStatistOld.getAccount().getUsername());
         return response;
       }
     } else {
@@ -60,7 +58,11 @@ public class UserStatistServiceImpl implements UserStatistService {
   public ListStatistResponse getAllStatic(int pageNo, int pageSize) {
     Page<UserStatist> statists = userStaticRepo.findAll(PageRequest.of(pageNo, pageSize));
     List<UserStatistResponse> statistDto = statists.getContent().stream()
-        .map(statist -> MapperUtil.map(statist, UserStatistResponse.class)).collect(
+        .map(statist -> new UserStatistResponse(
+            statist.getStaticId(),
+            statist.getCount(),
+            statist.getAccount().getUsername(),
+            statist.getLastLogin())).collect(
             Collectors.toList());
     ListStatistResponse response = new ListStatistResponse();
     response.setContent(statistDto);
@@ -69,6 +71,8 @@ public class UserStatistServiceImpl implements UserStatistService {
     response.setTotalCount(userStaticRepo.getTotalAll());
     response.setTotalPages(statists.getTotalPages());
     response.setLast(statists.isLast());
+    response.setCode(HttpStatus.ACCEPTED.value());
     return response;
   }
+
 }

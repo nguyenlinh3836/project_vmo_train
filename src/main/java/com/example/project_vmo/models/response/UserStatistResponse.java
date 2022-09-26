@@ -12,8 +12,7 @@ public class UserStatistResponse {
   @Id
   private int staticId;
   private int count;
-  private AccountResponse accountResponse;
+  private String username;
   private Date lastLogin;
-  private int code;
 
 }

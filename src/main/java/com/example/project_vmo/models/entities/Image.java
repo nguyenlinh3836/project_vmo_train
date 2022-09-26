@@ -1,5 +1,6 @@
 package com.example.project_vmo.models.entities;
 
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "image")
@@ -28,6 +31,20 @@ public class Image {
 
   @Column(name = "name")
   private String name;
+
+  @Column(name = "fileType")
+  private String fileType;
+
+  @Column(name = "imageUrl")
+  private String imageUrl;
+
+  @Column
+  @CreationTimestamp
+  private Date createAt;
+
+  @Column
+  @UpdateTimestamp
+  private Date updatedAt;
 
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "goodsId")

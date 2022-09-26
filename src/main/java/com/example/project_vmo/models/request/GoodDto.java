@@ -24,7 +24,6 @@ public class GoodDto {
   private String goodsName;
   @NotNull(message = "quantity not null")
   private int quantity;
-  @ValidImage
   private List< ImageDto> images;
   @NotNull(message = "supplierId not null")
   @Min(value = 1,message = "id must be larger than 1")

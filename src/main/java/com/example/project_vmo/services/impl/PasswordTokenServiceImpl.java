@@ -81,7 +81,7 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
 
   @Override
   public Boolean updatePassword(String email, String password) {
-    Account account = accountRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Find email","email", email ));
+    Account account = accountRepo.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Not found " + email));
     String encodedPassword = passwordEncoder.encode(password);
     account.setPassword(encodedPassword);
     accountRepo.save(account);

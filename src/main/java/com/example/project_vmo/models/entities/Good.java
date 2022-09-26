@@ -52,7 +52,6 @@ public class Good {
   private List<Image> images;
 
   @ManyToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "supplier_id")
+  @JoinColumn(name = "supplierId")
   private Account account;
-
 }
