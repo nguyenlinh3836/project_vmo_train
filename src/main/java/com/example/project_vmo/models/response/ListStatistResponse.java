@@ -1,17 +1,19 @@
 package com.example.project_vmo.models.response;
 
-import com.example.project_vmo.models.request.AccountRequest;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class RoleListResponse {
-  private List<AccountRequest> content;
+@NoArgsConstructor
+@AllArgsConstructor
+public class ListStatistResponse {
   private int code;
+  private List<UserStatistResponse> content;
   private int pageNo;
   private int pageSize;
-  private long totalElements;
+  private int totalCount;
   private int totalPages;
   private boolean last;
-
 }

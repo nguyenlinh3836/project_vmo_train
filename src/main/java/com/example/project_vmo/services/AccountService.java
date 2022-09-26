@@ -1,28 +1,27 @@
 package com.example.project_vmo.services;
 
-import com.example.project_vmo.models.request.AccountDto;
-import com.example.project_vmo.models.request.UpdateAccountDto;
+import com.example.project_vmo.models.request.AccountRequest;
+import com.example.project_vmo.models.request.UpdateAccountRequest;
 import com.example.project_vmo.models.request.UpdatePasswordRequest;
+import com.example.project_vmo.models.response.AccountResponse;
 import com.example.project_vmo.models.response.RoleListResponse;
-import com.example.project_vmo.security.jwt.CustomUserDetail;
 import java.util.List;
-import javax.security.auth.login.AccountNotFoundException;
 import org.springframework.security.core.userdetails.User;
 
 public interface AccountService {
 
-  List<AccountDto> getAll();
+  List<AccountRequest> getAll();
 
-  AccountDto createAccount(AccountDto accountDto);
+  AccountResponse createAccount(AccountRequest accountRequest);
 
 
   void deleteAccount(int id);
 
   RoleListResponse getAccountByRole(String name, int pageNo, int pageSize);
 
-  UpdateAccountDto updateAccount(UpdateAccountDto accountDto, User user);
+  UpdateAccountRequest updateAccount(UpdateAccountRequest accountDto, User user);
 
   void updatePassword(UpdatePasswordRequest passwordRequest, int id);
 
-  AccountDto adminUpdateDto(AccountDto accountDto,int id);
+  AccountRequest adminUpdate(AccountRequest accountRequest,int id);
 }

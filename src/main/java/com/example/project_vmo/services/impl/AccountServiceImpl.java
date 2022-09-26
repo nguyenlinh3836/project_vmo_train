@@ -1,15 +1,18 @@
 package com.example.project_vmo.services.impl;
 
 import com.example.project_vmo.commons.config.MapperUtil;
+import com.example.project_vmo.commons.exception.ResourceAlreadyExistsException;
 import com.example.project_vmo.commons.filters.PhoneValidator;
 import com.example.project_vmo.models.entities.Account;
 import com.example.project_vmo.models.entities.Role;
-import com.example.project_vmo.models.request.AccountDto;
-import com.example.project_vmo.models.request.UpdateAccountDto;
+import com.example.project_vmo.models.request.AccountRequest;
+import com.example.project_vmo.models.request.UpdateAccountRequest;
 import com.example.project_vmo.models.request.UpdatePasswordRequest;
+import com.example.project_vmo.models.response.AccountResponse;
 import com.example.project_vmo.models.response.RoleListResponse;
 import com.example.project_vmo.repositories.AccountRepo;
 import com.example.project_vmo.services.AccountService;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -37,25 +40,26 @@ public class AccountServiceImpl implements AccountService {
   private PhoneValidator phoneValidator;
 
   @Override
-  public List<AccountDto> getAll() {
-    return accountRepo.findAll().stream().map(account -> MapperUtil.map(account, AccountDto.class))
+  public List<AccountRequest> getAll() {
+    return accountRepo.findAll().stream().map(account -> MapperUtil.map(account, AccountRequest.class))
         .collect(
             Collectors.toList());
   }
 
   @Override
-  public AccountDto createAccount(AccountDto accountDto) {
-    Account account = MapperUtil.map(accountDto, Account.class);
+  public AccountResponse createAccount(AccountRequest accountRequest) {
+    Account account = MapperUtil.map(accountRequest, Account.class);
     if (emailExists(account.getEmail())){
-      throw new IllegalStateException("Email already exists !");
+      throw new ResourceAlreadyExistsException("Email already taken");
     }
     if (usernameExists(account.getUsername())){
-      throw new IllegalStateException("Username already exists !");
+      throw new ResourceAlreadyExistsException("Username already taken");
     }
-    List<Role> roles = MapperUtil.mapList(accountDto.getRoles(),Role.class);
+    List<Role> roles = MapperUtil.mapList(accountRequest.getRoles(),Role.class);
     account.setRoles(roles);
-    account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
-    return MapperUtil.map(accountRepo.save(account), AccountDto.class);
+    account.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
+    accountRepo.save(account);
+    return new AccountResponse(account.getAccountId(), account.getUsername());
   }
 
 
@@ -63,14 +67,15 @@ public class AccountServiceImpl implements AccountService {
   public void deleteAccount(int id) {
     Account account = MapperUtil.map(accountRepo.findByAccountId(id), Account.class);
     account.setIs_deleted(true);
-    MapperUtil.map(account, AccountDto.class);
+    MapperUtil.map(account, AccountRequest.class);
   }
 
   @Override
   public RoleListResponse getAccountByRole(String name,int pageNo,int pageSize) {
     Pageable pageable = PageRequest.of(pageNo,pageSize);
     Page<Account> accounts = accountRepo.findByRoles_roleName(name,pageable);
-    List<AccountDto> content = accounts.getContent().stream().map(account -> MapperUtil.map(account,AccountDto.class)).collect(
+    List<AccountRequest> content = accounts.getContent().stream().map(account -> MapperUtil.map(account,
+        AccountRequest.class)).collect(
         Collectors.toList());
     RoleListResponse response = new RoleListResponse();
     response.setContent(content);
@@ -79,6 +84,7 @@ public class AccountServiceImpl implements AccountService {
     response.setTotalElements(accounts.getTotalElements());
     response.setTotalPages(accounts.getTotalPages());
     response.setLast(accounts.isLast());
+    response.setCode(200);
     return  response;
   }
 
@@ -90,14 +96,14 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public AccountDto adminUpdateDto(AccountDto accountDto, int id) {
-    Account account = MapperUtil.map(accountDto, Account.class);
+  public AccountRequest adminUpdate(AccountRequest accountRequest, int id) {
+    Account account = MapperUtil.map(accountRequest, Account.class);
     account.setAccountId(id);
-    return MapperUtil.map(accountRepo.save(account), AccountDto.class);
+    return MapperUtil.map(accountRepo.save(account), AccountRequest.class);
   }
 
   @Override
-  public UpdateAccountDto updateAccount(UpdateAccountDto accountDto, User user) {
+  public UpdateAccountRequest updateAccount(UpdateAccountRequest accountDto, User user) {
     Account account = accountRepo.findByUsername(user.getUsername());
     account.setFullName(accountDto.getFullName());
     account.setAddress(accountDto.getAddress());
@@ -111,7 +117,7 @@ public class AccountServiceImpl implements AccountService {
       }
     }
     accountRepo.save(account);
-    return MapperUtil.map(account, UpdateAccountDto.class);
+    return MapperUtil.map(account, UpdateAccountRequest.class);
   }
 
   private boolean emailExists(String email) {

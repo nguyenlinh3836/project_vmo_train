@@ -1,12 +1,13 @@
 package com.example.project_vmo.models.request;
 
-import com.sun.istack.NotNull;
+
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class LoginDto {
-  @NotNull
+  @NotNull(message = "Please input username or email")
   private String usernameOrEmail;
-  @NotNull
+  @NotNull(message = "Please input password")
   private String password;
 }

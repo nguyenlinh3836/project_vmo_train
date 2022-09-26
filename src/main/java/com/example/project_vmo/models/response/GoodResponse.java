@@ -1,6 +1,5 @@
 package com.example.project_vmo.models.response;
 
-import com.example.project_vmo.models.entities.Image;
 import com.example.project_vmo.models.request.GoodDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -12,6 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoodResponse {
+  private int code;
   @ToString.Exclude
   private List<GoodDto> content;
   private int pageNo;

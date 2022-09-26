@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class TokenRefreshRequest {
-  @NotNull
+  @NotNull(message = "Please input token")
   private String refreshToken;
 }

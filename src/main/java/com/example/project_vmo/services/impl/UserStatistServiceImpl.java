@@ -3,8 +3,9 @@ package com.example.project_vmo.services.impl;
 import com.example.project_vmo.commons.config.MapperUtil;
 import com.example.project_vmo.models.entities.Account;
 import com.example.project_vmo.models.entities.UserStatist;
-import com.example.project_vmo.models.request.UserStatistDto;
 import com.example.project_vmo.models.response.UserStatistResponse;
+import com.example.project_vmo.models.response.AccountResponse;
+import com.example.project_vmo.models.response.ListStatistResponse;
 import com.example.project_vmo.repositories.AccountRepo;
 import com.example.project_vmo.repositories.UserStaticRepo;
 import com.example.project_vmo.services.UserStatistService;
@@ -27,7 +28,7 @@ public class UserStatistServiceImpl implements UserStatistService {
   private AccountRepo accountRepo;
 
   @Override
-  public void createStatic(String usernameOrEmail) {
+  public UserStatistResponse createStatic(String usernameOrEmail) {
     Optional<Account> account = accountRepo.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
     if (account.isPresent()) {
       UserStatist userStatist = userStaticRepo.findByAccount(account.get());
@@ -35,22 +36,33 @@ public class UserStatistServiceImpl implements UserStatistService {
         UserStatist userStatistNew = new UserStatist();
         userStatistNew.setAccount(account.get());
         userStatistNew.setCount(1);
-        userStaticRepo.save(userStatistNew);
+        UserStatistResponse response = MapperUtil.map(userStaticRepo.save(userStatistNew), UserStatistResponse.class);
+        AccountResponse accountResponse = MapperUtil.map(accountRepo.findByUsername(userStatistNew.getAccount().getUsername()),
+            AccountResponse.class);
+        response.setAccountResponse(accountResponse);
+        return response;
       } else {
         UserStatist userStatistOld = userStaticRepo.findByAccount(account.get());
         userStatistOld.setCount(userStatist.getCount() + 1);
-        userStaticRepo.save(userStatistOld);
+        userStatistOld.setAccount(account.get());
+        UserStatistResponse response = MapperUtil.map(userStaticRepo.save(userStatistOld), UserStatistResponse.class);
+        AccountResponse accountRes = MapperUtil.map(accountRepo.findByUsername(userStatistOld.getAccount().getUsername()),
+            AccountResponse.class);
+        response.setAccountResponse(accountRes);
+        return response;
       }
+    } else {
+      throw new RuntimeException("Account doesn't exist !");
     }
   }
 
   @Override
-  public UserStatistResponse getAllStatic(int pageNo, int pageSize) {
+  public ListStatistResponse getAllStatic(int pageNo, int pageSize) {
     Page<UserStatist> statists = userStaticRepo.findAll(PageRequest.of(pageNo, pageSize));
-    List<UserStatistDto> statistDto = statists.getContent().stream()
-        .map(statist -> MapperUtil.map(statist, UserStatistDto.class)).collect(
+    List<UserStatistResponse> statistDto = statists.getContent().stream()
+        .map(statist -> MapperUtil.map(statist, UserStatistResponse.class)).collect(
             Collectors.toList());
-    UserStatistResponse response = new UserStatistResponse();
+    ListStatistResponse response = new ListStatistResponse();
     response.setContent(statistDto);
     response.setPageNo(pageNo);
     response.setPageSize(pageSize);

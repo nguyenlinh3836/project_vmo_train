@@ -1,6 +1,6 @@
 package com.example.project_vmo.controllers;
 
-import com.example.project_vmo.models.request.UpdateAccountDto;
+import com.example.project_vmo.models.request.UpdateAccountRequest;
 import com.example.project_vmo.models.request.UpdatePasswordRequest;
 import com.example.project_vmo.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class SupplierController {
   private AccountService accountService;
 
   @PutMapping()
-  public ResponseEntity<?> updateUser(@RequestBody UpdateAccountDto accountDto,
+  public ResponseEntity<?> updateUser(@RequestBody UpdateAccountRequest accountDto,
       @AuthenticationPrincipal User user) {
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body(accountService.updateAccount(accountDto, user ));

@@ -44,7 +44,7 @@ public class AuthController {
   private PasswordTokenService passwordTokenService;
 
   @PostMapping("/buyer")
-  public ResponseEntity<JWTAuthResponse> authenticateBuyer(@RequestBody LoginDto loginDto) {
+  public ResponseEntity<JWTAuthResponse> authenticateBuyer(@RequestBody @Valid LoginDto loginDto) {
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(),
             loginDto.getPassword()));
@@ -93,13 +93,13 @@ public class AuthController {
   }
 
   @GetMapping("/forgot-password/confirm")
-  public String confirmTokenToChangePassword(@RequestParam("token") String token) {
+  public String confirmTokenToChangePassword(@RequestParam("token") @Valid String token) {
     return passwordTokenService.confirmTokenResetPassword(token);
   }
 
   @PostMapping("/forgot-password")
   public ResponseEntity<?> sendTokenToChangePassword(
-      @RequestBody PasswordResetLinkRequest request) {
+      @RequestBody @Valid PasswordResetLinkRequest request) {
     return ResponseEntity.ok(passwordTokenService.sendTokenToChangePassword(request));
   }
 
@@ -109,7 +109,7 @@ public class AuthController {
   }
 
   @PostMapping("/refresh-token")
-  public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
+  public ResponseEntity<?> refreshToken( @RequestBody @Valid TokenRefreshRequest request) {
     String requestRefreshToken = request.getRefreshToken();
 
     RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken).get();

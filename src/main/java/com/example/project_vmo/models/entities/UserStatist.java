@@ -9,12 +9,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Table
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class UserStatist {
 
   @Id
@@ -29,6 +36,4 @@ public class UserStatist {
   @Column
   @UpdateTimestamp
   private Date lastLogin;
-
-
 }

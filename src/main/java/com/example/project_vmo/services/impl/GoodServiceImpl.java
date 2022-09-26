@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
@@ -53,6 +55,7 @@ public class GoodServiceImpl implements GoodService {
     response.setTotalElements(goods.getTotalElements());
     response.setTotalPages(goods.getTotalPages());
     response.setLast(goods.isLast());
+    response.setCode(200);
     return response;
   }
 
@@ -101,7 +104,10 @@ public class GoodServiceImpl implements GoodService {
 
   @Override
   @Transactional
-  public GoodDto updateGood(GoodDto goodDto, int id,MultipartFile[] files) throws IOException {
+  public GoodDto updateGood(GoodDto goodDto, int id, MultipartFile[] files) throws IOException {
+    if (id<=0){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"id must >= 1");
+    }
     Good good = MapperUtil.map(goodRepo.findByGoodsId(id), Good.class);
     imageRepo.deleteImagesByGoods(good.getGoodsId());
     return createGood(goodDto,files);
@@ -110,6 +116,9 @@ public class GoodServiceImpl implements GoodService {
   @Override
   @Transactional
   public void deleteGood(int id) {
+    if (id<=0){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"id must >= 1");
+    }
     Good good = goodRepo.findByGoodsId(id);
     good.setIs_deleted(true);
     goodRepo.save(good);

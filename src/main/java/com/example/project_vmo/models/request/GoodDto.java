@@ -1,13 +1,13 @@
 package com.example.project_vmo.models.request;
 
 import com.example.project_vmo.commons.filters.ValidImage;
-import com.sun.istack.NotNull;
+
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Id;
-import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,14 +20,16 @@ public class GoodDto {
 
   @Id
   private int goodsId;
-  @NotNull
+  @NotNull(message = "name is not null")
   private String goodsName;
-  @NotNull
+  @NotNull(message = "quantity not null")
   private int quantity;
   @ValidImage
   private List< ImageDto> images;
+  @NotNull(message = "supplierId not null")
+  @Min(value = 1,message = "id must be larger than 1")
   private int supplierId;
-  private Date create_at;
+  private Date createAt;
 //  private Date updated_at;
 //  private Boolean is_deleted = Boolean.FALSE;
 //  private MultipartFile[] images;

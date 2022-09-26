@@ -38,13 +38,13 @@ public class Good {
   private int quantity;
   @Column
   @CreationTimestamp
-  private Date create_at;
+  private Date createAt;
 
   @Column
   @UpdateTimestamp
-  private Date updated_at;
+  private Date updatedAt;
 
-  @Column(name = "is_deleted")
+  @Column(name = "isDeleted")
   private Boolean is_deleted = Boolean.FALSE;
 
   @OneToMany(mappedBy = "goods", cascade = CascadeType.ALL)

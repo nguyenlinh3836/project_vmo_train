@@ -1,8 +1,9 @@
 package com.example.project_vmo.controllers;
 
-import com.example.project_vmo.models.request.AccountDto;
+import com.example.project_vmo.models.request.AccountRequest;
 import com.example.project_vmo.models.response.AccountCreateResponse;
 import com.example.project_vmo.services.AccountService;
+import com.example.project_vmo.services.UserStatistService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +25,14 @@ public class AdminController {
   @Autowired
   private AccountService accountService;
 
+  @Autowired
+  private UserStatistService userStatistService;
+
   @PostMapping
-  public ResponseEntity<?> createAccount(@Valid @RequestBody AccountDto accountDto) {
+  public ResponseEntity<?> createAccount(@Valid @RequestBody AccountRequest accountRequest) {
     AccountCreateResponse response = new AccountCreateResponse();
-    response.setAccountDto(accountService.createAccount(accountDto));
-    response.setMessage("New account has been create !");
+    response.setAccountResponse(accountService.createAccount(accountRequest));
+    response.setCode(201);
     return ResponseEntity.status(HttpStatus.ACCEPTED)
         .body(response);
   }
@@ -42,15 +46,22 @@ public class AdminController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<?> updateAccount(@RequestBody AccountDto accountDto,
+  public ResponseEntity<?> updateAccount(@RequestBody AccountRequest accountRequest,
       @PathVariable("id") int id) {
     return ResponseEntity.status(HttpStatus.ACCEPTED)
-        .body(accountService.adminUpdateDto(accountDto, id));
+        .body(accountService.adminUpdate(accountRequest, id));
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteAccount(@PathVariable("id") int id) {
     accountService.deleteAccount(id);
     return ResponseEntity.status(HttpStatus.ACCEPTED).body("Buyer has been deleted");
+  }
+
+  @GetMapping("/statist")
+  public ResponseEntity<?> getStatist(
+      @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
+      @RequestParam(value = "pageSize", defaultValue = "5") int pageSize){
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(userStatistService.getAllStatic(pageNo,pageSize));
   }
 }

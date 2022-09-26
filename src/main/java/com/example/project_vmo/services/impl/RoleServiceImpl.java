@@ -7,7 +7,9 @@ import com.example.project_vmo.repositories.RoleRepo;
 import com.example.project_vmo.services.RoleService;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
@@ -17,7 +19,11 @@ private RoleRepo roleRepo;
   @Override
   public RoleDto createRole(RoleDto roleDto) {
     Role role = MapperUtil.map(roleDto, Role.class);
-    return MapperUtil.map(roleRepo.save(role), RoleDto.class);
+    if  ( roleRepo.findByRoleName(role.getRoleName()) != null){
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Role name already exist !");
+    } else {
+      return MapperUtil.map(roleRepo.save(role), RoleDto.class);
+    }
   }
 
   @Override
@@ -31,5 +37,11 @@ private RoleRepo roleRepo;
     Role role = MapperUtil.map(roleDto, Role.class);
     role.setRoleId(id);
     return MapperUtil.map(roleRepo.save(role),RoleDto.class);
+  }
+
+  @Override
+  public void deleteRole(int id) {
+    Role role = roleRepo.findByRoleId(id);
+    roleRepo.delete(role);
   }
 }

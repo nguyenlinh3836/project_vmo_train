@@ -58,12 +58,12 @@ public class Account {
   @Column
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
-  private Date create_at;
+  private Date createAt;
 
   @Column
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
-  private Date updated_at;
+  private Date updatedAt;
 
   @Column
   private Boolean is_deleted = false;

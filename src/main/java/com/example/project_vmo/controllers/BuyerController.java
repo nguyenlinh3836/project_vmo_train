@@ -1,11 +1,10 @@
 package com.example.project_vmo.controllers;
 
 
-import com.example.project_vmo.models.request.UpdateAccountDto;
+import com.example.project_vmo.models.request.UpdateAccountRequest;
 import com.example.project_vmo.models.request.UpdatePasswordRequest;
-import com.example.project_vmo.security.jwt.CustomUserDetail;
 import com.example.project_vmo.services.AccountService;
-import java.security.Principal;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +24,14 @@ public class BuyerController {
   private AccountService accountService;
 
   @PutMapping()
-  public ResponseEntity<?> updateUser(@RequestBody UpdateAccountDto accountDto,
+  public ResponseEntity<?> updateUser(@RequestBody @Valid UpdateAccountRequest accountRequest,
       @AuthenticationPrincipal User user) {
     return ResponseEntity.status(HttpStatus.ACCEPTED)
-        .body(accountService.updateAccount(accountDto, user ));
+        .body(accountService.updateAccount(accountRequest, user ));
   }
 
   @PutMapping("/changePassword/{id}")
-  public ResponseEntity<?> updatePassword(@PathVariable("id") int id,@RequestBody
+  public ResponseEntity<?> updatePassword(@PathVariable("id") @Valid int id,@RequestBody @Valid
       UpdatePasswordRequest updatePasswordRequest){
     accountService.updatePassword(updatePasswordRequest,id);
     return ResponseEntity.status(HttpStatus.ACCEPTED).body("Password has been change !");

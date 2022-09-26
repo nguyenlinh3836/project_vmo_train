@@ -9,4 +9,6 @@ public interface RoleService {
   RoleDto getRoleById(int id);
 
   RoleDto updateRole(RoleDto roleDto, int id);
+
+  void deleteRole(int id);
 }

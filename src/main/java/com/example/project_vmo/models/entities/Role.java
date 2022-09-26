@@ -1,5 +1,6 @@
 package com.example.project_vmo.models.entities;
 
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "role")
@@ -25,5 +28,13 @@ public class Role {
 
   @Column
   private String roleName;
+
+  @Column
+  @CreationTimestamp
+  private Date createAt;
+
+  @Column
+  @UpdateTimestamp
+  private Date updatedAt;
 
 }

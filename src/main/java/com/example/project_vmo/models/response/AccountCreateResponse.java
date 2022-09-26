@@ -1,6 +1,5 @@
 package com.example.project_vmo.models.response;
 
-import com.example.project_vmo.models.request.AccountDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountCreateResponse {
+  private int code;
 
-  private AccountDto accountDto;
+  private AccountResponse accountResponse;
 
-  private String message;
+  private String message = "Account has been create !";
 }
