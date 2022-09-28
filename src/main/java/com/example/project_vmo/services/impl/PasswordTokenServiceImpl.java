@@ -16,6 +16,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +63,7 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
       saveConfirmationToken(account, token);
       String link = url + token;
       emailSender.sendEmail(account.getEmail(), buildEmail(account.getUsername(), link));
-      return "Success: Token send successfully!" + token;
+      return "Success: Token send successfully! Please check your email to verify !";
     } else {
       return "Fail: Email is not found";
     }
@@ -74,9 +75,9 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
     if (request.getToken().equals(token.getToken())) {
       updatePassword(request.getEmail(), request.getPassword());
       passwordResetTokenRepo.delete(passwordResetTokenRepo.findByToken(request.getToken()).get());
-      return new MessageResponse("Change password successfully!!");
+      return new MessageResponse(HttpStatus.ACCEPTED.value(),"Change password successfully!!");
     }
-    return new MessageResponse("Change password fail!!");
+    return new MessageResponse(HttpStatus.BAD_REQUEST.value(),"Change password fail!!");
   }
 
   @Override
@@ -135,7 +136,7 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
             "                                            style=\"padding: 5px 5px px; width: 366px; color: #ffff; text-decoration: none; font-family: sans-serif;\"\n"
             +
             "                                            align=\"center\"><span\n" +
-            "                                                style=\"font-weight: 600;\">Email Confirmation Required</span></td>\n"
+            "                                                style=\"font-weight: 600;\">EMAIL PASSWORD CHANGE NOTIFICATION</span></td>\n"
             +
             "\n" +
             "                                    </tr>\n" +
@@ -156,9 +157,9 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
             "                                            <p class=\"\"\n" +
             "                                               style=\"margin: 20px 0; font-size: 16px; mso-line-height-rule: exactly; line-height: 24px;\">\n"
             +
-            "                                            <span style=\"font-weight: 400;\">Thank you for joining <strong>Customer App</strong>,welcom to join us!</span><br/><br/><span\n"
+            "                                            <span style=\"font-weight: 400;\">Password change notification <strong>Purchase Management app App</strong>,click the button to continue!</span><br/><br/><span\n"
             +
-            "                                                style=\"font-weight: 400;\">To complete the registration process, please confirm your email address to activate your account</span>\n"
+            "                                                style=\"font-weight: 400;\">This link expires 15 minutes from the time it was sent. This link directs you to the Account Management website, where you can enter a new password.</span>\n"
             +
             "                                            <table style=\"border: 0; width: 100%;\" cellspacing=\"0\" cellpadding=\"0\">\n"
             +
@@ -191,9 +192,9 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
             + link + "\"\n" +
             "                                                                            target=\"_blank\"\n"
             +
-            "                                                                            rel=\"noopener\">Confirm\n"
+            "                                                                            rel=\"noopener\">Change\n"
             +
-            "                                                                        email</a> <!--![endif]--></td>\n"
+            "                                                                        password</a> <!--![endif]--></td>\n"
             +
             "                                                            </tr>\n" +
             "                                                            </tbody>\n" +
@@ -220,7 +221,7 @@ public class PasswordTokenServiceImpl implements PasswordTokenService {
             "                                            <p class=\"tw-signoff\"\n" +
             "                                               style=\"margin: 45px 0 5px; font-size: 16px; mso-line-height-rule: exactly; line-height: 24px;\">\n"
             +
-            "                                                Our best, <br/> The Customer Engagement App team</p>\n"
+            "                                                Our best, <br/> The Purchase Management App team</p>\n"
             +
             "                                        </td>\n" +
             "                                    </tr>\n" +

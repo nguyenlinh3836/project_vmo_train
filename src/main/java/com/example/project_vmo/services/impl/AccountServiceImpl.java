@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,8 +76,8 @@ public class AccountServiceImpl implements AccountService {
   public RoleListResponse getAccountByRole(String name,int pageNo,int pageSize) {
     Pageable pageable = PageRequest.of(pageNo,pageSize);
     Page<Account> accounts = accountRepo.findByRoles_roleName(name,pageable);
-    List<AccountRequest> content = accounts.getContent().stream().map(account -> MapperUtil.map(account,
-        AccountRequest.class)).collect(
+    List<AccountResponse> content = accounts.getContent().stream().map(account -> MapperUtil.map(account,
+        AccountResponse.class)).collect(
         Collectors.toList());
     RoleListResponse response = new RoleListResponse();
     response.setContent(content);
@@ -85,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
     response.setTotalElements(accounts.getTotalElements());
     response.setTotalPages(accounts.getTotalPages());
     response.setLast(accounts.isLast());
-    response.setCode(200);
+    response.setCode(HttpStatus.ACCEPTED.value());
     return  response;
   }
 
@@ -98,8 +99,7 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public AccountRequest adminUpdate(AccountRequest accountRequest, int id) {
-    Account account = MapperUtil.map(accountRequest, Account.class);
-    account.setAccountId(id);
+    Account account = MapperUtil.map(accountRepo.findByAccountId(id), Account.class);    ;
     return MapperUtil.map(accountRepo.save(account), AccountRequest.class);
   }
 

@@ -33,6 +33,7 @@ public class RoleController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteRole(@PathVariable(value = "id") int id) {
+    roleService.deleteRole(id);
     return ResponseEntity.status(HttpStatus.ACCEPTED).body("Role has been delete !");
   }
 

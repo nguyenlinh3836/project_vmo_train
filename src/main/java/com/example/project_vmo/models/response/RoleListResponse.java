@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class RoleListResponse {
-  private List<AccountRequest> content;
+  private List<AccountResponse> content;
   private int code;
   private int pageNo;
   private int pageSize;
