@@ -2,11 +2,13 @@ package com.example.project_vmo.services.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.project_vmo.commons.config.MapperUtil;
+import com.example.project_vmo.commons.exception.ResourceNotFoundException;
 import com.example.project_vmo.models.entities.Account;
 import com.example.project_vmo.models.entities.Good;
 import com.example.project_vmo.models.entities.Image;
 import com.example.project_vmo.models.request.GoodDto;
 import com.example.project_vmo.models.response.GoodResponse;
+import com.example.project_vmo.models.response.MessageResponse;
 import com.example.project_vmo.repositories.AccountRepo;
 import com.example.project_vmo.repositories.GoodRepo;
 import com.example.project_vmo.repositories.ImageRepo;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -105,24 +108,32 @@ public class GoodServiceImpl implements GoodService {
 
   @Override
   @Transactional
-  public GoodDto updateGood(GoodDto goodDto, int id, MultipartFile[] files) throws IOException {
+  public GoodDto updateGood(GoodDto goodDto, int id, MultipartFile[] files, User user) throws IOException {
     if (id<=0){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"id must >= 1");
     }
     Good good = MapperUtil.map(goodRepo.findByGoodsId(id), Good.class);
-    imageRepo.deleteImagesByGoods(good.getGoodsId());
-    return createGood(goodDto,files);
+    if (good.getAccount().getAccountId() == accountRepo.findByUsername(user.getUsername()).getAccountId()){
+      imageRepo.deleteImagesByGoods(good.getGoodsId());
+      return createGood(goodDto,files);
+    } else {
+      throw new ResourceNotFoundException("You not own this good !");
+    }
   }
 
   @Override
   @Transactional
-  public void deleteGood(int id) {
+  public void deleteGood(int id,User user) {
     if (id<=0){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"id must >= 1");
     }
     Good good = goodRepo.findByGoodsId(id);
-    good.setIs_deleted(true);
-    goodRepo.save(good);
+    if (good.getAccount().getAccountId() == accountRepo.findByUsername(user.getUsername()).getAccountId()){
+      good.setIs_deleted(true);
+      goodRepo.save(good);
+    } else {
+      throw new ResourceNotFoundException("You not own this good !");
+    }
   }
 
   public Map upload(MultipartFile multipartFile) throws IOException {

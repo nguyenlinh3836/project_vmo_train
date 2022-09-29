@@ -10,6 +10,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,15 +50,15 @@ public class GoodController {
 
   @PutMapping("/{id}")
   public ResponseEntity<?> updateGood(@RequestPart(value = "good")  GoodDto goodDto, @PathVariable int id,
-      @RequestPart MultipartFile[] files)
+      @RequestPart MultipartFile[] files,@AuthenticationPrincipal User user)
       throws IOException {
     return ResponseEntity.status(HttpStatus.ACCEPTED)
-        .body(goodService.updateGood(goodDto, id, files));
+        .body(goodService.updateGood(goodDto, id, files,user));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> deleteGood(@PathVariable int id) {
-    goodService.deleteGood(id);
+  public ResponseEntity<?> deleteGood(@PathVariable int id,@AuthenticationPrincipal User user) {
+    goodService.deleteGood(id,user);
     return ResponseEntity.status(HttpStatus.ACCEPTED).body("Good has been deleted");
   }
 
