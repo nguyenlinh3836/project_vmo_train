@@ -2,6 +2,7 @@ package com.example.project_vmo.controllers;
 
 import com.example.project_vmo.models.request.AccountRequest;
 import com.example.project_vmo.models.response.AccountCreateResponse;
+import com.example.project_vmo.models.response.MessageResponse;
 import com.example.project_vmo.services.AccountService;
 import com.example.project_vmo.services.UserStatistService;
 import javax.validation.Valid;
@@ -55,7 +56,7 @@ public class AdminController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteAccount(@PathVariable("id") int id) {
     accountService.deleteAccount(id);
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Buyer has been deleted");
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageResponse(HttpStatus.ACCEPTED.value(),"Buyer has been deleted"));
   }
 
   @GetMapping("/statist")

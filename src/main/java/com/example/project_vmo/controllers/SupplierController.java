@@ -2,6 +2,7 @@ package com.example.project_vmo.controllers;
 
 import com.example.project_vmo.models.request.UpdateAccountRequest;
 import com.example.project_vmo.models.request.UpdatePasswordRequest;
+import com.example.project_vmo.models.response.MessageResponse;
 import com.example.project_vmo.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,6 @@ public class SupplierController {
   public ResponseEntity<?> updatePassword(@PathVariable("id") int id,@RequestBody
   UpdatePasswordRequest updatePasswordRequest){
     accountService.updatePassword(updatePasswordRequest,id);
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Password has been change !");
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageResponse(HttpStatus.ACCEPTED.value(),"Password has been change !"));
   }
 }

@@ -3,6 +3,7 @@ package com.example.project_vmo.controllers;
 import com.example.project_vmo.commons.filters.ValidImage;
 import com.example.project_vmo.models.request.GoodDto;
 import com.example.project_vmo.models.response.GoodResponse;
+import com.example.project_vmo.models.response.MessageResponse;
 import com.example.project_vmo.services.GoodService;
 import com.example.project_vmo.services.ImageService;
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class GoodController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteGood(@PathVariable int id,@AuthenticationPrincipal User user) {
     goodService.deleteGood(id,user);
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Good has been deleted");
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageResponse(HttpStatus.ACCEPTED.value(),"Good has been deleted"));
   }
 
   @GetMapping("/{goodId}")

@@ -1,6 +1,7 @@
 package com.example.project_vmo.controllers;
 
 import com.example.project_vmo.models.request.RoleDto;
+import com.example.project_vmo.models.response.MessageResponse;
 import com.example.project_vmo.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class RoleController {
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteRole(@PathVariable(value = "id") int id) {
     roleService.deleteRole(id);
-    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Role has been delete !");
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MessageResponse(HttpStatus.ACCEPTED.value(),"Role has been delete !"));
   }
 
 }
