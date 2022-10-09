@@ -35,7 +35,7 @@ public class Good {
   @Column
   private String goodsName;
   @Column
-  private int quantity;
+  private double price;
   @Column
   @CreationTimestamp
   private Date createAt;
@@ -54,4 +54,10 @@ public class Good {
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "supplierId")
   private Account account;
+
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "categoryId")
+  private Categories categories;
+
+
 }

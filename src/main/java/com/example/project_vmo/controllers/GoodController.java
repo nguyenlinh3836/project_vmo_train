@@ -37,13 +37,13 @@ public class GoodController {
   @GetMapping
   public GoodResponse listGoods(
       @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
-      @RequestParam(value = "pageSize", defaultValue = "5") int pageSize
-  ) {
-    return goodService.getAllGoods(pageNo, pageSize);
+      @RequestParam(value = "pageSize", defaultValue = "5") int pageSize,
+      @RequestParam(defaultValue = "goodsId",value = "sort") String name) {
+    return goodService.getAllGoods(pageNo, pageSize,name);
   }
 
   @PostMapping()
-  public ResponseEntity<?> createGood(@RequestPart(value = "good") @Validated GoodDto goodDto,
+  public ResponseEntity<?> createGoods(@RequestPart(value = "good") @Validated GoodDto goodDto,
       @RequestPart(value = "files", required = false) @Valid  MultipartFile[]  files)
       throws IOException {
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(goodService.createGood(goodDto, files));

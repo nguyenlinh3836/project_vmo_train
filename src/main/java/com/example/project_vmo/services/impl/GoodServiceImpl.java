@@ -6,9 +6,11 @@ import com.example.project_vmo.commons.exception.ResourceNotFoundException;
 import com.example.project_vmo.models.entities.Account;
 import com.example.project_vmo.models.entities.Good;
 import com.example.project_vmo.models.entities.Image;
+import com.example.project_vmo.models.request.CategoriesRequest;
 import com.example.project_vmo.models.request.GoodDto;
+import com.example.project_vmo.models.request.ImageDto;
 import com.example.project_vmo.models.response.GoodResponse;
-import com.example.project_vmo.models.response.MessageResponse;
+import com.example.project_vmo.models.response.GoodResponseItem;
 import com.example.project_vmo.repositories.AccountRepo;
 import com.example.project_vmo.repositories.GoodRepo;
 import com.example.project_vmo.repositories.ImageRepo;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -53,9 +56,17 @@ public class GoodServiceImpl implements GoodService {
 
   @Override
   @Transactional
-  public GoodResponse getAllGoods(int pageNo,int pageSize) {
-    Page<Good> goods = goodRepo.findAll(PageRequest.of(pageNo,pageSize));
-    List<GoodDto> content = goods.getContent().stream().map(good -> MapperUtil.map(good,GoodDto.class)).collect(Collectors.toList());
+  public GoodResponse getAllGoods(int pageNo,int pageSize,String sortBy) {
+    Page<Good> goods = goodRepo.findAll(PageRequest.of(pageNo,pageSize, Sort.by(sortBy)));
+    List<GoodResponseItem> content = goods.getContent().stream().map(good -> new GoodResponseItem(
+        good.getGoodsId(),
+        good.getGoodsName(),
+        good.getPrice(),
+        MapperUtil.mapList(good.getImages(), ImageDto.class),
+        MapperUtil.map(good.getCategories(), CategoriesRequest.class),
+        good.getAccount().getUsername(),
+        good.getCreateAt()
+    )).collect(Collectors.toList());
     GoodResponse response = new GoodResponse();
     response.setContent(content);
     response.setPageNo(pageNo);

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface GoodService {
 
-  GoodResponse getAllGoods(int pageNo, int pageSize);
+  GoodResponse getAllGoods(int pageNo, int pageSize,String sortBy);
 
   GoodDto findByGoodName(String name);
 

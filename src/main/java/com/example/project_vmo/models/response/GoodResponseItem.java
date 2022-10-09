@@ -1,31 +1,26 @@
-package com.example.project_vmo.models.request;
+package com.example.project_vmo.models.response;
+
 import com.example.project_vmo.models.entities.Categories;
+import com.example.project_vmo.models.request.CategoriesRequest;
+import com.example.project_vmo.models.request.ImageDto;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class GoodDto {
-
-  @Id
+@NoArgsConstructor
+public class GoodResponseItem {
   private int goodsId;
-  @NotNull(message = "name is not null")
   private String goodsName;
-  @NotNull(message = "price not null")
   private double price;
   private List<ImageDto> images;
-  private Categories categories;
-  @NotNull(message = "supplierId not null")
-  @Min(value = 1, message = "id must be larger than 1")
-  private int supplierId;
+  private CategoriesRequest categories;
+  private String supplierName;
   private Date createAt;
 }

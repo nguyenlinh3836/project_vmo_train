@@ -1,10 +1,13 @@
 package com.example.project_vmo.services.impl;
 
 import com.example.project_vmo.commons.config.MapperUtil;
+import com.example.project_vmo.commons.exception.ResourceAlreadyExistsException;
 import com.example.project_vmo.models.entities.Role;
 import com.example.project_vmo.models.request.RoleDto;
 import com.example.project_vmo.repositories.RoleRepo;
 import com.example.project_vmo.services.RoleService;
+import java.time.LocalDateTime;
+import java.util.Date;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +23,7 @@ private RoleRepo roleRepo;
   public RoleDto createRole(RoleDto roleDto) {
     Role role = MapperUtil.map(roleDto, Role.class);
     if  ( roleRepo.findByRoleName(role.getRoleName()) != null){
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Role name already exist !");
+      throw new ResourceAlreadyExistsException("Role name already exist !");
     } else {
       return MapperUtil.map(roleRepo.save(role), RoleDto.class);
     }
@@ -35,8 +38,15 @@ private RoleRepo roleRepo;
   @Override
   public RoleDto updateRole(RoleDto roleDto, int id) {
     Role role = MapperUtil.map(roleDto, Role.class);
-    role.setRoleId(id);
-    return MapperUtil.map(roleRepo.save(role),RoleDto.class);
+    if  ( roleRepo.findByRoleName(role.getRoleName()) != null){
+      throw new ResourceAlreadyExistsException("Role name already exist !");
+    } else {
+      role.setRoleId(id);
+      role.setRoleName(role.getRoleName());
+      role.setCreateAt(new Date());
+      role.setUpdatedAt(new Date());
+      return MapperUtil.map(roleRepo.save(role), RoleDto.class);
+    }
   }
 
   @Override
